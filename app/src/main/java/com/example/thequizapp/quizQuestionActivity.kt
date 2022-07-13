@@ -8,9 +8,11 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import androidx.core.content.ContextCompat
+import com.example.thequizapp.databinding.ActivityQuizQuestionBinding
 import org.w3c.dom.Text
 
 class quizQuestionActivity : AppCompatActivity() {
+    private lateinit var binding : ActivityQuizQuestionBinding
     private var CurrentPosition: Int = 1
     private var Questions: ArrayList<QuestPgDataFrmtCls>? = null
     private var SelectedOption = 0
@@ -18,14 +20,14 @@ class quizQuestionActivity : AppCompatActivity() {
     private var bts =true
     private var username:String?=null
     override fun onCreate(savedInstanceState: Bundle?) {
-        username=intent.getStringExtra(InputConstantsQues.USER_NAME)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_quiz_question)
+        binding = ActivityQuizQuestionBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        username=intent.getStringExtra(InputConstantsQues.USER_NAME)
         Questions = InputConstantsQues.getQuestion()
-        Log.i("Size Of Questions", "${Questions!!.size}")
         setQuestion()
-        val button : Button =findViewById(R.id.SubmitB)
-        button.setOnClickListener{
+        binding.SubmitB.setOnClickListener{
             val ques: QuestPgDataFrmtCls = Questions!![CurrentPosition - 1]
             if(SelectedOption==0)
                 Toast.makeText(this,"Please select a option",Toast.LENGTH_SHORT).show()
@@ -38,9 +40,9 @@ class quizQuestionActivity : AppCompatActivity() {
 
                 bts=false
                 if(CurrentPosition!=Questions!!.size)
-                button.setText("Click To Proceed")
+                binding.SubmitB.setText("Click To Proceed")
                 else
-                    button.setText("FINISH")
+                    binding.SubmitB.setText("FINISH")
 
             }
             else if(CurrentPosition==Questions!!.size)
@@ -60,7 +62,7 @@ class quizQuestionActivity : AppCompatActivity() {
                 setQuestion()
                 optionNormalizer()
                 bts=true
-                button.setText("SUBMIT")
+                binding.SubmitB.setText("SUBMIT")
             }
 
 
@@ -70,26 +72,23 @@ class quizQuestionActivity : AppCompatActivity() {
 
     private fun setQuestion() {
         val ques: QuestPgDataFrmtCls = Questions!![CurrentPosition - 1]
-        findViewById<ProgressBar>(R.id.progressBar).progress = CurrentPosition
-        findViewById<TextView>(R.id.progressTv).text = "$CurrentPosition"
-        findViewById<ImageView>(R.id.quesImage).setImageResource(ques.image)
-        findViewById<TextView>(R.id.questionTv).text = ques.question
-        val o1 = findViewById<TextView>(R.id.option1)
-        val o2 = findViewById<TextView>(R.id.option2)
-        val o3 = findViewById<TextView>(R.id.option3)
-        val o4 = findViewById<TextView>(R.id.option4)
-        o1.text = ques.choice1
-        o2.text = ques.choice2
-        o3.text = ques.choice3
-        o4.text = ques.choice4
+        binding.progressBar.progress = CurrentPosition
+        binding.progressTv.text = "$CurrentPosition"
+        binding.quesImage.setImageResource(ques.image)
+        binding.questionTv.text = ques.question
+
+        binding.option1.text = ques.choice1
+        binding.option2.text = ques.choice2
+        binding.option3.text = ques.choice3
+        binding.option4.text = ques.choice4
     }
     private fun optionNormalizer()
     {
         val options= ArrayList<TextView>()
-        options.add(0,findViewById<TextView>(R.id.option1))
-        options.add(1,findViewById<TextView>(R.id.option2))
-        options.add(2,findViewById<TextView>(R.id.option3))
-        options.add(3,findViewById<TextView>(R.id.option4))
+        options.add(0,binding.option1)
+        options.add(1,binding.option2)
+        options.add(2,binding.option3)
+        options.add(3,binding.option4)
         for(option in options)
         {
             option.setTextColor(Color.parseColor("#7A8089"))
@@ -105,10 +104,10 @@ class quizQuestionActivity : AppCompatActivity() {
             return
         optionNormalizer()
         val options= ArrayList<TextView>()
-        options.add(0,findViewById<TextView>(R.id.option1))
-        options.add(1,findViewById<TextView>(R.id.option2))
-        options.add(2,findViewById<TextView>(R.id.option3))
-        options.add(3,findViewById<TextView>(R.id.option4))
+        options.add(0,binding.option1)
+        options.add(1,binding.option2)
+        options.add(2,binding.option3)
+        options.add(3,binding.option4)
         var i=1
         for(option in options)
         {
@@ -135,20 +134,20 @@ class quizQuestionActivity : AppCompatActivity() {
     }
     private fun highlightred(selectedOption: Int, ques: QuestPgDataFrmtCls) : Boolean{
         val options= ArrayList<TextView>()
-        options.add(0,findViewById<TextView>(R.id.option1))
-        options.add(1,findViewById<TextView>(R.id.option2))
-        options.add(2,findViewById<TextView>(R.id.option3))
-        options.add(3,findViewById<TextView>(R.id.option4))
+        options.add(0,binding.option1)
+        options.add(1,binding.option2)
+        options.add(2,binding.option3)
+        options.add(3,binding.option4)
         options[selectedOption-1].background= ContextCompat.getDrawable(this,R.drawable.red)
         options[ques.answer-1].background= ContextCompat.getDrawable(this,R.drawable.green)
         return false
     }
     private fun highlightgreen(ques: QuestPgDataFrmtCls): Boolean {
         val options= ArrayList<TextView>()
-        options.add(0,findViewById<TextView>(R.id.option1))
-        options.add(1,findViewById<TextView>(R.id.option2))
-        options.add(2,findViewById<TextView>(R.id.option3))
-        options.add(3,findViewById<TextView>(R.id.option4))
+        options.add(0,binding.option1)
+        options.add(1,binding.option2)
+        options.add(2,binding.option3)
+        options.add(3,binding.option4)
         options[ques.answer-1].background= ContextCompat.getDrawable(this,R.drawable.green)
         return true
     }
